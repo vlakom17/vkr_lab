@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS track_episode;
+DROP TABLE IF EXISTS episodes;
+DROP TABLE IF EXISTS tracks;

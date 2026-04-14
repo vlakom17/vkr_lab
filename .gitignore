@@ -1,0 +1,7 @@
+# Office files
+*.docx
+*.pptx
+
+# Env
+.env
+.env.*
