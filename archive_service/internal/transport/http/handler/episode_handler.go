@@ -41,25 +41,6 @@ func (h *EpisodeHandler) GetEpisode(c *gin.Context) {
 	c.JSON(http.StatusOK, episode)
 }
 
-func (h *EpisodeHandler) GetLatestEpisodes(c *gin.Context) {
-	limitStr := c.Query("limit")
-
-	limit := 10
-	if limitStr != "" {
-		if l, err := strconv.Atoi(limitStr); err == nil && l > 0 {
-			limit = l
-		}
-	}
-
-	episodes, err := h.service.GetLatestEpisodes(c.Request.Context(), limit)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, episodes)
-}
-
 func (h *EpisodeHandler) GetLatestEpisodesInternal(c *gin.Context) {
 	limitStr := c.Query("limit")
 

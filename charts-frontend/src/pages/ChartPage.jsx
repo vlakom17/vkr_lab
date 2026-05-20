@@ -10,6 +10,7 @@ import {
 } from "../api/analysis";
 import { getUserById } from "../api/users";
 import { getChartById } from "../api/charts"
+import { getMyReaction } from "../api/analysis";
 import EpisodeListItem from "../components/EpisodeListItem";
 import { useLocation } from "react-router-dom";
 
@@ -26,7 +27,9 @@ function ChartPage() {
   const [userName, setUserName] = useState("Загрузка...");
   const [showUser, setShowUser] = useState(false);
   const [user, setUser] = useState(null);
+  const [page, setPage] = useState(1);
   const location = useLocation();
+  const PAGE_SIZE = 5;
 
   useEffect(() => {
     getChartById(id).then(setChart);
@@ -101,7 +104,20 @@ function ChartPage() {
       setLoadingReaction(false);
     }
   };
+  useEffect(() => {
+    async function loadMyReaction() {
+      try {
+        const data = await getMyReaction(id);
 
+        setMyReaction(data.type || null);
+      } catch (e) {
+        console.error("Ошибка загрузки реакции:", e);
+        setMyReaction(null);
+      }
+    }
+
+    loadMyReaction();
+  }, [id]);
   useEffect(() => {
     if (!episodes || episodes.length === 0) return;
 
@@ -130,7 +146,12 @@ function ChartPage() {
   }, [episodes]);
 
   if (!chart) return <p>Загрузка...</p>;
+    const visibleEpisodes = (episodes || []).slice(
+    0,
+    page * PAGE_SIZE
+  );
 
+  const hasMore = visibleEpisodes.length < episodes.length;
   return (
     <div className="container">
       <div className="card chart-header">
@@ -200,7 +221,7 @@ function ChartPage() {
       <h2>Эпизоды</h2>
 
       <div className="list">
-        {(episodes || []).map((ep, index) => {
+        {visibleEpisodes.map((ep, index) => {
           const safeId = ep?.ID || index;
           const topTrack = ep?.ID ? topTracks?.[ep.ID] : null;
 
@@ -214,6 +235,14 @@ function ChartPage() {
           );
         })}
       </div>
+      {hasMore && (
+        <button
+          className="load-more-button"
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Показать ещё
+        </button>
+      )}
     </div>
   );
 }

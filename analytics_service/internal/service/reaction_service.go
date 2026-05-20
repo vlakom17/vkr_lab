@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"charts-analytics-service/internal/client"
 	"charts-analytics-service/internal/domain/event"
 	"charts-analytics-service/internal/domain/reaction"
 	"charts-analytics-service/internal/repository/postgres"
@@ -11,12 +12,18 @@ import (
 )
 
 type ReactionService struct {
-	repo *postgres.ReactionRepository
+	repo       *postgres.ReactionRepository
+	userClient *client.UserClient
 }
 
-func NewReactionService(repo *postgres.ReactionRepository) *ReactionService {
+func NewReactionService(
+	repo *postgres.ReactionRepository,
+	userClient *client.UserClient,
+) *ReactionService {
+
 	return &ReactionService{
-		repo: repo,
+		repo:       repo,
+		userClient: userClient,
 	}
 }
 
@@ -145,4 +152,25 @@ func (s *ReactionService) HandleReactionEvent(
 	default:
 		return nil
 	}
+}
+
+func (s *ReactionService) GetMyReactionOnChart(
+	ctx context.Context,
+	token string,
+	chartID uuid.UUID,
+) (*reaction.Reaction, error) {
+
+	userID, err := s.userClient.GetUserIDByToken(
+		ctx,
+		token,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.repo.GetByUserAndChart(
+		ctx,
+		userID,
+		chartID,
+	)
 }

@@ -21,15 +21,6 @@ func NewChartHandler(s *service.ChartService) *ChartHandler {
 	return &ChartHandler{service: s}
 }
 
-type IDsRequest struct {
-	IDs []string `json:"ids"`
-}
-
-type GenreRequest struct {
-	Genre string `json:"genre"`
-	Limit int    `json:"limit"`
-}
-
 func (h *ChartHandler) CreateChart(c *gin.Context) {
 	var req request.CreateChartRequest
 
@@ -197,95 +188,6 @@ func (h *ChartHandler) GetMyChart(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, chart)
-}
-
-func (h *ChartHandler) GetChartsByIDs(c *gin.Context) {
-	var req IDsRequest
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "invalid request"})
-		return
-	}
-
-	var ids []uuid.UUID
-	for _, idStr := range req.IDs {
-		id, err := uuid.Parse(idStr)
-		if err != nil {
-			c.JSON(400, gin.H{"error": "invalid id"})
-			return
-		}
-		ids = append(ids, id)
-	}
-
-	charts, err := h.service.GetChartsByIDs(c.Request.Context(), ids)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(200, charts)
-}
-
-func (h *ChartHandler) GetChartIDsByGenre(c *gin.Context) {
-	var req GenreRequest
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "invalid request"})
-		return
-	}
-
-	if req.Genre == "" {
-		c.JSON(400, gin.H{"error": "genre is required"})
-		return
-	}
-
-	if req.Limit <= 0 || req.Limit > 150 {
-		req.Limit = 150
-	}
-
-	ids, err := h.service.GetChartIDsByGenre(
-		c.Request.Context(),
-		req.Genre,
-		req.Limit,
-	)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(200, ids)
-}
-
-func (h *ChartHandler) GetGenresByChartIDs(c *gin.Context) {
-	var req IDsRequest
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "invalid request"})
-		return
-	}
-
-	var ids []uuid.UUID
-	for _, idStr := range req.IDs {
-		id, err := uuid.Parse(idStr)
-		if err != nil {
-			c.JSON(400, gin.H{"error": "invalid id"})
-			return
-		}
-		ids = append(ids, id)
-	}
-
-	result, err := h.service.GetGenresByChartIDs(c.Request.Context(), ids)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	resp := make(map[string]string)
-	for id, genre := range result {
-		resp[id.String()] = genre
-	}
-
-	c.JSON(200, resp)
 }
 
 func (h *ChartHandler) SetReaction(c *gin.Context) {

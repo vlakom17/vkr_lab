@@ -68,33 +68,6 @@ func (r *TrackRepository) FindOrCreate(
 	return t, nil
 }
 
-func (r *TrackRepository) GetByID(ctx context.Context, id uuid.UUID) (*track.Track, error) {
-	query := `
-	SELECT id, artist, title, normalized_key
-	FROM tracks
-	WHERE id = $1
-	`
-
-	t := &track.Track{}
-
-	err := r.db.QueryRow(ctx, query, id).Scan(
-		&t.ID,
-		&t.Artist,
-		&t.Title,
-		&t.NormalizedKey,
-	)
-
-	if err == pgx.ErrNoRows {
-		return nil, nil
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return t, nil
-}
-
 func (r *TrackRepository) Search(ctx context.Context, query string) ([]track.Track, error) {
 	sqlQuery := `
 	SELECT id, artist, title, normalized_key

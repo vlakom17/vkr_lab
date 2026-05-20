@@ -16,6 +16,7 @@ func SetupReactionRoutes(
 	public := r.Group("/analysis")
 	{
 		public.GET("/:chart_id", h.GetReactionStats)
+		public.GET("/:chart_id/my-reaction", h.GetMyReactionOnChart)
 	}
 
 	internal := r.Group("/internal/analysis")

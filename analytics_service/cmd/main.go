@@ -30,7 +30,7 @@ func main() {
 	archiveClient := client.NewArchiveClient(cfg.ArchiveServiceURL, cfg.InternalAPIKey)
 	userClient := client.NewUserClient(cfg.UserServiceURL, cfg.InternalAPIKey)
 
-	reactionService := service.NewReactionService(reactionRepo)
+	reactionService := service.NewReactionService(reactionRepo, userClient)
 	recommendationService := service.NewRecommendationService(reactionRepo, archiveClient)
 
 	consumer := mb.NewConsumer(cfg.KafkaBroker, mb.KafkaTopic, cfg.KafkaGroupID)

@@ -135,7 +135,7 @@ func (s *RecommendationService) GetRecommendations(
 	result := make([]dto.EpisodeResponse, len(final))
 
 	for i, v := range final {
-		result[i] = v.episode
+		result[i] = keepOnlyTopTrack(v.episode)
 	}
 
 	return result, nil
@@ -265,4 +265,22 @@ func (s *RecommendationService) scoreEpisode(
 	}
 
 	return score
+}
+
+func keepOnlyTopTrack(
+	ep dto.EpisodeResponse,
+) dto.EpisodeResponse {
+
+	var topTracks []dto.TrackEpisodeResponse
+
+	for _, track := range ep.Tracks {
+		if track.CurrentPosition == 1 {
+			topTracks = append(topTracks, track)
+			break
+		}
+	}
+
+	ep.Tracks = topTracks
+
+	return ep
 }

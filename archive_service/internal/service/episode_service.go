@@ -82,10 +82,6 @@ func (s *EpisodeService) GetEpisodesByChart(ctx context.Context, chartID uuid.UU
 	return s.episodeRepo.GetByChartID(ctx, chartID)
 }
 
-func (s *EpisodeService) GetLatestEpisodes(ctx context.Context, limit int) ([]episode.Episode, error) {
-	return s.episodeRepo.GetLatestByLimit(ctx, limit)
-}
-
 func (s *EpisodeService) GetLatestEpisodesWithTracks(
 	ctx context.Context,
 	limit int,

@@ -182,28 +182,6 @@ func (s *ChartService) GetMyChart(
 	return &charts[0], nil
 }
 
-func (s *ChartService) GetChartsByIDs(
-	ctx context.Context,
-	ids []uuid.UUID,
-) ([]chart.Chart, error) {
-	return s.repo.GetByIDs(ctx, ids)
-}
-
-func (s *ChartService) GetChartIDsByGenre(
-	ctx context.Context,
-	genre string,
-	limit int,
-) ([]uuid.UUID, error) {
-	return s.repo.GetIDsByGenre(ctx, genre, limit)
-}
-
-func (s *ChartService) GetGenresByChartIDs(
-	ctx context.Context,
-	ids []uuid.UUID,
-) (map[uuid.UUID]string, error) {
-	return s.repo.GetGenresByChartIDs(ctx, ids)
-}
-
 func (s *ChartService) SetReaction(
 	ctx context.Context,
 	userID uuid.UUID,

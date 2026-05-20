@@ -15,3 +15,7 @@ export function getChartStats(chartId) {
 export function getRecommendations() {
   return request(`${API_URLS.analytics}/analysis/recommendations`);
 }
+
+export function getMyReaction(chartId) {
+  return request(`${API_URLS.analytics}/analysis/${chartId}/my-reaction`);
+}

@@ -5,6 +5,7 @@ import (
 	"charts-analytics-service/internal/transport/http/response"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -94,5 +95,61 @@ func (h *ReactionHandler) GetUserDislikedChartIDs(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.ChartIDsResponse{
 		ChartIDs: ids,
+	})
+}
+
+func (h *ReactionHandler) GetMyReactionOnChart(c *gin.Context) {
+
+	chartIDParam := c.Param("chart_id")
+
+	chartID, err := uuid.Parse(chartIDParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid chart_id",
+		})
+		return
+	}
+
+	authHeader := c.GetHeader("Authorization")
+
+	if authHeader == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"type": nil,
+		})
+		return
+	}
+
+	token := strings.TrimSpace(
+		strings.TrimPrefix(authHeader, "Bearer "),
+	)
+
+	if token == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"type": nil,
+		})
+		return
+	}
+
+	rct, err := h.service.GetMyReactionOnChart(
+		c.Request.Context(),
+		token,
+		chartID,
+	)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"type": nil,
+		})
+		return
+	}
+
+	if rct == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"type": nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"type": rct.Type,
 	})
 }

@@ -31,10 +31,4 @@ func SetupChartRoutes(
 	charts.POST("/:id/episode", chartHandler.CreateEpisode)
 	charts.GET("/me/likes", chartHandler.GetMyLikedCharts)
 	charts.GET("/me/dislikes", chartHandler.GetMyDislikedCharts)
-
-	internal := r.Group("/internal/charts")
-
-	internal.POST("/by-ids", chartHandler.GetChartsByIDs)
-	internal.POST("/ids-by-genre", chartHandler.GetChartIDsByGenre)
-	internal.POST("/genres-by-ids", chartHandler.GetGenresByChartIDs)
 }

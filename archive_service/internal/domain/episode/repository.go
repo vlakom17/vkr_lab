@@ -13,7 +13,6 @@ type EpisodeRepository interface {
 	GetByID(ctx context.Context, id uuid.UUID) (*Episode, error)
 	GetByChartID(ctx context.Context, chartID uuid.UUID) ([]Episode, error)
 	GetLatestByChartID(ctx context.Context, chartID uuid.UUID) (*Episode, error)
-	GetLatestByLimit(ctx context.Context, limit int) ([]Episode, error)
 	GetLatestWithTracksByLimit(ctx context.Context, limit int) ([]dto.EpisodeResponse, error)
 	GetTracksWithMetaByEpisodeID(ctx context.Context, episodeID uuid.UUID) ([]dto.TrackEpisodeResponse, error)
 	GetNearestLeftWithTracks(ctx context.Context, chartID uuid.UUID, date time.Time) (*dto.EpisodeResponse, error)

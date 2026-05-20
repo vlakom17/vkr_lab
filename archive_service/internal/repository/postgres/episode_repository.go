@@ -213,36 +213,6 @@ func (r *EpisodeRepository) GetLatestByChartID(ctx context.Context, chartID uuid
 	return e, nil
 }
 
-func (r *EpisodeRepository) GetLatestByLimit(ctx context.Context, limit int) ([]episode.Episode, error) {
-	query := `
-	SELECT id, chart_id, created_at
-	FROM episodes
-	ORDER BY created_at DESC
-	LIMIT $1
-	`
-
-	rows, err := r.db.Query(ctx, query, limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var result []episode.Episode
-
-	for rows.Next() {
-		var e episode.Episode
-
-		err := rows.Scan(&e.ID, &e.ChartID, &e.CreatedAt)
-		if err != nil {
-			return nil, err
-		}
-
-		result = append(result, e)
-	}
-
-	return result, rows.Err()
-}
-
 func (r *EpisodeRepository) GetLatestWithTracksByLimit(
 	ctx context.Context,
 	limit int,

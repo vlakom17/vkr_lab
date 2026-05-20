@@ -475,6 +475,18 @@ h1 {
   color: var(--primary);
 }
 
+.load-more-button {
+  width: 100%;
+  margin-top: 16px;
+
+  padding: 14px;
+
+  border: none;
+  border-radius: 12px;
+
+  cursor: pointer;
+}
+
 .back-button {
   margin-bottom: 10px;
 }
