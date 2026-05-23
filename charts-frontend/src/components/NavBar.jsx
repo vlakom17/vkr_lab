@@ -1,15 +1,35 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import { isAuthenticated, removeToken } from "../utils/auth";
-import { logout } from "../api/users";
+import { logout, getMe } from "../api/users";
 
 function Navbar() {
-  const [auth, setAuth] = useState(isAuthenticated);
+  const [auth, setAuth] = useState(isAuthenticated());
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    setAuth(isAuthenticated());
-  }, []);
+    async function checkAuth() {
+
+      if (!isAuthenticated()) {
+        setAuth(false);
+        return;
+      }
+
+      try {
+        await getMe();
+        setAuth(true);
+
+      } catch {
+
+        removeToken();
+        setAuth(false);
+      }
+    }
+
+    checkAuth();
+
+  }, [location.pathname]);
 
   useEffect(() => {
     function handleAuthChange() {
@@ -17,7 +37,6 @@ function Navbar() {
     }
 
     window.addEventListener("authChanged", handleAuthChange);
-
     return () => {
       window.removeEventListener("authChanged", handleAuthChange);
     };
@@ -34,29 +53,29 @@ function Navbar() {
     navigate("/");
   };
 
-  return (
-    <div className="header">
-      <div className="header-left">
-      </div>
+  return(
+      <div className="header">
+        <div className="header-left">
+        </div>
 
-      <div className="header-logo" onClick={() => navigate("/")}>
-        Charter
-      </div>
+        <div className="header-logo" onClick={() => navigate("/")}>
+          Charter
+        </div>
 
-      <div className="header-right">
-        {!auth ? (
-          <>
-            <button onClick={() => navigate("/login")}>Войти</button>
-            <button onClick={() => navigate("/register")}>Регистрация</button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => navigate("/me")}>Личный кабинет</button>
-            <button onClick={handleLogout}>Выйти</button>
-          </>
-        )}
+        <div className="header-right">
+          {!auth ? (
+            <>
+              <button onClick={() => navigate("/login")}>Войти</button>
+              <button onClick={() => navigate("/register")}>Регистрация</button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate("/me")}>Личный кабинет</button>
+              <button onClick={handleLogout}>Выйти</button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
   );
 }
 

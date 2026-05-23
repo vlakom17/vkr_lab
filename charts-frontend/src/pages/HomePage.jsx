@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getLatestEpisodes } from "../api/archive";
+import { getMe } from "../api/users";
+import { isAuthenticated, removeToken } from "../utils/auth";
 import EpisodeCard from "../components/EpisodeCard";
 import PopularCharts from "../components/PopularCharts";
 import RecommendedEpisodes from "../components/RecommendedEpisodes";
@@ -23,6 +25,22 @@ function HomePage() {
     loadEpisodes();
   }, [page]);
 
+  useEffect(() => {
+    async function checkAuth() {
+
+      if (!isAuthenticated()) {
+        return;
+      }
+
+      try {
+        await getMe();
+      } catch {
+        removeToken();
+      }
+    }
+    
+    checkAuth();
+  }, [tab]);
 
   const isFirstPage = page === 1;
   const isLastPage = !episodes || episodes.length < pageSize;
@@ -75,9 +93,16 @@ function HomePage() {
           episodes.length === 0 ? (
             <p>Нет эпизодов</p>
           ) : (
-            episodes.map((ep) => (
-              <EpisodeCard key={ep.ID} episode={ep} />
-            ))
+            episodes.map((ep) => {
+              const episodeId = ep.id || ep.ID;
+
+              return (
+                <EpisodeCard
+                  key={episodeId}
+                  episode={ep}
+                />
+              );
+            })
           )
         )}
     {tab === "popular" && <PopularCharts />}

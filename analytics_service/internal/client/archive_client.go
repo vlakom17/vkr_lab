@@ -1,12 +1,13 @@
 package client
 
 import (
-	"charts-analytics-service/internal/client/dto"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
+
+	"charts-analytics-service/internal/client/dto"
 
 	"github.com/google/uuid"
 )

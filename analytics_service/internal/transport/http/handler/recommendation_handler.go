@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"charts-analytics-service/internal/service"
 	"net/http"
 	"strconv"
+
+	"charts-analytics-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

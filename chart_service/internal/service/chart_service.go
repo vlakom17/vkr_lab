@@ -41,8 +41,8 @@ func (s *ChartService) CreateChart(
 	userID uuid.UUID,
 	title string,
 	genre string,
-	positionCount int,
 	description string,
+	positionCount int,
 ) (*chart.Chart, error) {
 
 	existing, err := s.repo.GetByUserID(ctx, userID)
@@ -67,8 +67,8 @@ func (s *ChartService) CreateChart(
 		UserID:        userID,
 		Title:         title,
 		Genre:         genre,
-		PositionCount: positionCount,
 		Description:   description,
+		PositionCount: positionCount,
 	}
 
 	return s.repo.Create(ctx, c)
@@ -76,12 +76,12 @@ func (s *ChartService) CreateChart(
 
 func (s *ChartService) PatchChart(
 	ctx context.Context,
-	userID uuid.UUID,
 	chartID uuid.UUID,
+	userID uuid.UUID,
 	title *string,
 	genre *string,
-	positionCount *int,
 	description *string,
+	positionCount *int,
 ) (*chart.Chart, error) {
 
 	c, err := s.repo.GetByID(ctx, chartID)
@@ -180,93 +180,6 @@ func (s *ChartService) GetMyChart(
 	}
 
 	return &charts[0], nil
-}
-
-func (s *ChartService) SetReaction(
-	ctx context.Context,
-	userID uuid.UUID,
-	chartID uuid.UUID,
-	reactionType event.ReactionType,
-) error {
-
-	c, err := s.repo.GetByID(ctx, chartID)
-	if err != nil {
-		return err
-	}
-	if c == nil {
-		return errors.New("chart not found")
-	}
-
-	if reactionType != event.ReactionLike && reactionType != event.ReactionDislike &&
-		reactionType != event.ReactionView && reactionType != event.ReactionRemove {
-		return errors.New("invalid reaction type")
-	}
-
-	ev := event.ReactionEvent{
-		UserID:    userID,
-		ChartID:   chartID,
-		Type:      reactionType,
-		CreatedAt: time.Now(),
-	}
-
-	return s.producer.SendReaction(ctx, ev)
-}
-
-func (s *ChartService) CreateEpisodeSnapshot(
-	ctx context.Context,
-	userID uuid.UUID,
-	chartID uuid.UUID,
-	tracks []event.TrackEntryData,
-) error {
-
-	c, err := s.repo.GetByID(ctx, chartID)
-	if err != nil {
-		return err
-	}
-	if c == nil {
-		return errors.New("chart not found")
-	}
-
-	if c.UserID != userID {
-		return errors.New("forbidden")
-	}
-
-	if len(tracks) != c.PositionCount {
-		return errors.New("invalid number of tracks")
-	}
-
-	currentPositions := make(map[int]bool)
-
-	for _, t := range tracks {
-
-		if err := utilits.ValidateTrackInput(t.Artist, t.Title); err != nil {
-			return fmt.Errorf("invalid track at position %d: %w", t.CurrentPosition, err)
-		}
-
-		if t.CurrentPosition < 1 || t.CurrentPosition > c.PositionCount {
-			return errors.New("invalid current position")
-		}
-
-		if currentPositions[t.CurrentPosition] {
-			return errors.New("duplicate current position")
-		}
-		currentPositions[t.CurrentPosition] = true
-
-	}
-
-	for i := 1; i <= c.PositionCount; i++ {
-		if !currentPositions[i] {
-			return errors.New("positions must be continuous")
-		}
-	}
-
-	ev := event.EpisodeSnapshotEvent{
-		ChartID:   chartID,
-		Tracks:    tracks,
-		CreatedAt: time.Now(),
-	}
-
-	return s.producer.SendEpisode(ctx, ev)
 }
 
 func (s *ChartService) GetMostPopularCharts(
@@ -374,4 +287,91 @@ func (s *ChartService) GetUserDislikedCharts(
 	}
 
 	return result, nil
+}
+
+func (s *ChartService) SetReaction(
+	ctx context.Context,
+	userID uuid.UUID,
+	chartID uuid.UUID,
+	reactionType event.ReactionType,
+) error {
+
+	c, err := s.repo.GetByID(ctx, chartID)
+	if err != nil {
+		return err
+	}
+	if c == nil {
+		return errors.New("chart not found")
+	}
+
+	if reactionType != event.ReactionLike && reactionType != event.ReactionDislike &&
+		reactionType != event.ReactionView && reactionType != event.ReactionRemove {
+		return errors.New("invalid reaction type")
+	}
+
+	ev := event.ReactionEvent{
+		UserID:    userID,
+		ChartID:   chartID,
+		Type:      reactionType,
+		CreatedAt: time.Now(),
+	}
+
+	return s.producer.SendReaction(ctx, ev)
+}
+
+func (s *ChartService) CreateEpisodeSnapshot(
+	ctx context.Context,
+	userID uuid.UUID,
+	chartID uuid.UUID,
+	tracks []event.TrackEntryData,
+) error {
+
+	c, err := s.repo.GetByID(ctx, chartID)
+	if err != nil {
+		return err
+	}
+	if c == nil {
+		return errors.New("chart not found")
+	}
+
+	if c.UserID != userID {
+		return errors.New("forbidden")
+	}
+
+	if len(tracks) != c.PositionCount {
+		return errors.New("invalid number of tracks")
+	}
+
+	currentPositions := make(map[int]bool)
+
+	for _, t := range tracks {
+
+		if err := utilits.ValidateTrackInput(t.Artist, t.Title); err != nil {
+			return fmt.Errorf("invalid track at position %d: %w", t.CurrentPosition, err)
+		}
+
+		if t.CurrentPosition < 1 || t.CurrentPosition > c.PositionCount {
+			return errors.New("invalid current position")
+		}
+
+		if currentPositions[t.CurrentPosition] {
+			return errors.New("duplicate current position")
+		}
+		currentPositions[t.CurrentPosition] = true
+
+	}
+
+	for i := 1; i <= c.PositionCount; i++ {
+		if !currentPositions[i] {
+			return errors.New("positions must be continuous")
+		}
+	}
+
+	ev := event.EpisodeSnapshotEvent{
+		ChartID:   chartID,
+		Tracks:    tracks,
+		CreatedAt: time.Now(),
+	}
+
+	return s.producer.SendEpisode(ctx, ev)
 }

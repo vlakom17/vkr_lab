@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { getMyChart } from "../api/charts";
-import { getMe } from "../api/users";
+import { getMyChart, updateChart } from "../api/charts";
+import { getMe, updateProfile } from "../api/users";
 import { useNavigate } from "react-router-dom";
-import { updateProfile } from "../api/users";
-import { updateChart } from "../api/charts";
 import MyChartSection from "../components/MyChartSection";
 import ProfileSection from "../components/ProfileSection";
 import ChartEditForm from "../components/ChartEditForm";
+
 function ProfilePage() {
   const [user, setUser] = useState(null);
   const [chart, setChart] = useState(null);
@@ -14,6 +13,7 @@ function ProfilePage() {
   const [editChartMode, setEditChartMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -26,6 +26,7 @@ function ProfilePage() {
     genre: "",
     position_count: 10,
   });
+
   const handleChartSave = async () => {
     if (!chart?.id) return;
     setError("");
@@ -39,7 +40,7 @@ function ProfilePage() {
       setError("Ошибка обновления чарта");
     }
   };
-  const navigate = useNavigate();
+  
   const handleSave = async () => {
     try {
       const dataToSend = {
@@ -111,11 +112,13 @@ function ProfilePage() {
       }
     }
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
   
-
   if (loading) return <p style={{ padding: "20px" }}>Загрузка...</p>;
+  if (!user) {
+    return <p>Профиль не загружен</p>;
+  }
 
   return (
     <div className="container">

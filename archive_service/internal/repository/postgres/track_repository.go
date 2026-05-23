@@ -1,8 +1,9 @@
 package postgres
 
 import (
-	"charts-archive-service/internal/domain/track"
 	"context"
+
+	"charts-archive-service/internal/domain/track"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"

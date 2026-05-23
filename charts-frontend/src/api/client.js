@@ -1,3 +1,5 @@
+import { removeToken } from "../utils/auth";
+let sessionExpiredHandled = false;
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
 
@@ -17,13 +19,26 @@ async function request(url, options = {}) {
       ...(options.headers || {}),
     },
   });
+  if (
+    res.status === 401 &&
+    !url.includes("/auth/login") &&
+    !url.includes("/auth/register")
+  ) {
+    if (sessionExpiredHandled) {
+      return null;
+    }
 
-  if (res.status === 401) {
+    sessionExpiredHandled = true;
+
     removeToken();
-    window.location.href = "/login";
-    throw new Error("Unauthorized");
-  }
 
+    setTimeout(() => {
+      alert("Вы не авторизованы или ваша сессия истекла. Войдите в систему.");
+      window.location.href = "/";
+    }, 50);
+
+    return null;
+  }
   if (res.status === 204) {
     return null;
   }

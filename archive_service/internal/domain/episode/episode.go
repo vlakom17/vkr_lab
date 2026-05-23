@@ -1,8 +1,9 @@
 package episode
 
 import (
-	"charts-archive-service/internal/domain/track_episode"
 	"time"
+
+	"charts-archive-service/internal/domain/track_episode"
 
 	"github.com/google/uuid"
 )

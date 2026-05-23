@@ -97,7 +97,7 @@ services:
       - users-postgres
       - redis
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@users-postgres:5432/${POSTGRES_USR_DB}?sslmode=disable
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@users-postgres:5432/user_db?sslmode=disable
       REDIS_ADDR: redis://:${REDIS_PASSWORD}@redis:6379
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
     ports:
@@ -112,7 +112,7 @@ services:
       - charts-postgres
       - charts-kafka
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@charts-postgres:5432/${POSTGRES_CHRT_DB}?sslmode=disable
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@charts-postgres:5432/chart_db?sslmode=disable
       KAFKA_BROKER: charts-kafka:9092
       USER_SERVICE_URL: http://charts-user-service:8080
       ANALYTICS_SERVICE_URL: http://charts-analytics-service:8080
@@ -129,7 +129,7 @@ services:
       - archive-postgres
       - charts-kafka
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@archive-postgres:5432/${POSTGRES_ARCHV_DB}?sslmode=disable
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@archive-postgres:5432/archive_db?sslmode=disable
       KAFKA_BROKER: charts-kafka:9092
       KAFKA_GROUP_ID: archive-service
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
@@ -145,7 +145,7 @@ services:
       - analytics-postgres
       - charts-kafka
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@analytics-postgres:5432/${POSTGRES_ANLT_DB}?sslmode=disable
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@analytics-postgres:5432/analytics_db?sslmode=disable
       KAFKA_BROKER: charts-kafka:9092
       KAFKA_GROUP_ID: analytics-service
       USER_SERVICE_URL: http://charts-user-service:8080

@@ -49,29 +49,30 @@ function PopularCharts() {
   }, []);
 
   useEffect(() => {
-  if (!popularCharts.length) return;
+    if (!popularCharts.length) return;
 
-  async function loadUsers() {
-    try {
-      const uniqueIds = [...new Set(popularCharts.map(c => c.user_id))];
+    async function loadUsers() {
+      try {
+        const uniqueIds = [...new Set(popularCharts.map(c => c.user_id))];
 
-      const results = await Promise.all(
-        uniqueIds.map(async (id) => {
-          try {
-            const user = await getUserById(id);
-            return [id, user.name];
-          } catch {
-            return [id, "Неизвестно"];
-          }
-        })
-      );
-      setUsers(Object.fromEntries(results));
-    } catch (e) {
-      console.error("Ошибка пользователей:", e);
+        const results = await Promise.all(
+          uniqueIds.map(async (id) => {
+            try {
+              const user = await getUserById(id);
+              return [id, user.name];
+            } catch {
+              return [id, "Неизвестно"];
+            }
+          })
+        );
+        setUsers(Object.fromEntries(results));
+      } 
+      catch (e) {
+        console.error("Ошибка пользователей:", e);
+      }
     }
-  }
-  loadUsers();
-}, [popularCharts]);
+    loadUsers();
+  }, [popularCharts]);
 
   if (loading) return <p>Загрузка...</p>;
   if (popularCharts.length === 0) return <p>Нет популярных чартов</p>;

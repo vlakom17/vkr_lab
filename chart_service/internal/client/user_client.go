@@ -34,8 +34,7 @@ func (c *UserClient) GetUserIDByToken(ctx context.Context, token string) (uuid.U
 		fmt.Sprintf("%s/internal/auth/user", c.baseURL),
 		nil,
 	)
-	fmt.Println("URL:", fmt.Sprintf("%s/internal/auth/user", c.baseURL))
-	fmt.Println("TOKEN:", token)
+
 	if err != nil {
 		return uuid.Nil, err
 	}
@@ -60,6 +59,5 @@ func (c *UserClient) GetUserIDByToken(ctx context.Context, token string) (uuid.U
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return uuid.Nil, err
 	}
-	fmt.Println("STATUS:", resp.StatusCode)
 	return result.UserID, nil
 }

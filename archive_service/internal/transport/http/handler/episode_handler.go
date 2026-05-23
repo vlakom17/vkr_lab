@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"charts-archive-service/internal/service"
 	"net/http"
 	"strconv"
 	"time"
+
+	"charts-archive-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

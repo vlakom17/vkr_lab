@@ -4,23 +4,24 @@ import { getChartByIdWithoutView } from "../api/charts";
 
 function EpisodeCard({ episode }) {
   const navigate = useNavigate();
-
   const [chart, setChart] = useState(null);
+  const Id = episode.id || episode.ID;
+  const chartId = episode.chart_id || episode.ChartID;
+  const createdAt = episode.created_at || episode.CreatedAt;
+  const date = createdAt
+    ? new Date(createdAt).toLocaleDateString()
+    : "—";
 
   useEffect(() => {
-    getChartByIdWithoutView(episode.ChartID)
+    getChartByIdWithoutView(chartId)
       .then((data) => setChart(data))
       .catch(() => setChart(null));
-  }, [episode.ChartID]);
-
-  const date = episode.CreatedAt
-    ? new Date(episode.CreatedAt).toLocaleDateString()
-    : "—";
+  }, [chartId]);
 
   return (
     <div
       className="card episode-card"
-      onClick={() => navigate(`/episodes/${episode.ID}`)}
+      onClick={() => navigate(`/episodes/${Id}`)}
     >
       <div className="episode-date">📅 {date}</div>
 

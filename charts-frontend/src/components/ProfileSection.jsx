@@ -6,7 +6,7 @@ function ProfileSection({ user, form, setForm, editMode, setEditMode, onSave }) 
         <p><span className="muted">Email:</span> {user.email}</p>
         <p><span className="muted">
             Дата регистрации:</span>{" "}
-            {new Date(user.createdAt).toLocaleDateString()}
+            {new Date(user.created_at).toLocaleDateString()}
           </p>
         <p><span className="muted">О себе:</span> {user.about || "—"}</p>
         <button
@@ -53,6 +53,7 @@ function ProfileSection({ user, form, setForm, editMode, setEditMode, onSave }) 
         type="password"
         placeholder="Новый пароль"
         value={form.password}
+        autoComplete="new-password"
         onChange={(e) =>
           setForm({ ...form, password: e.target.value })
         }

@@ -17,7 +17,7 @@ export function getEpisodesByChart(chartId) {
 }
 
 export function getLatestEpisodes(page, pageSize) {
-  return request(`${API_URLS.archive}/episodes?page=${page}&limit=${pageSize}`);
+  return request(`${API_URLS.archive}/episodes/latest-page?page=${page}&limit=${pageSize}`);
 }
 
 export function searchTracks(query) {

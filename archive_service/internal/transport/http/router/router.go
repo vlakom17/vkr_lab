@@ -1,8 +1,9 @@
 package router
 
 import (
-	"charts-archive-service/internal/transport/http/handler"
 	"time"
+
+	"charts-archive-service/internal/transport/http/handler"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

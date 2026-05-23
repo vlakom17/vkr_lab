@@ -12,46 +12,6 @@ const (
 	minLetters = 1
 )
 
-func ValidateTrackInput(artist, title string) error {
-	artist = strings.TrimSpace(artist)
-	title = strings.TrimSpace(title)
-
-	if artist == "" || title == "" {
-		return fmt.Errorf("artist and title are required")
-	}
-
-	if len([]rune(artist)) > maxLength {
-		return fmt.Errorf("artist is too long")
-	}
-	if len([]rune(title)) > maxLength {
-		return fmt.Errorf("title is too long")
-	}
-
-	if countLetters(artist) < minLetters {
-		return fmt.Errorf("artist must contain at least %d letters", minLetters)
-	}
-	if countLetters(title) < minLetters {
-		return fmt.Errorf("title must contain at least %d letters", minLetters)
-	}
-
-	if looksLikeURL(artist) || looksLikeURL(title) {
-		return fmt.Errorf("links are not allowed")
-	}
-
-	if looksLikeHTML(artist) || looksLikeHTML(title) {
-		return fmt.Errorf("html content is not allowed")
-	}
-
-	if isSuspicious(artist) {
-		return fmt.Errorf("artist looks suspicious")
-	}
-	if isSuspicious(title) {
-		return fmt.Errorf("title looks suspicious")
-	}
-
-	return nil
-}
-
 func countLetters(s string) int {
 	count := 0
 	for _, r := range s {
@@ -92,4 +52,44 @@ func isSuspicious(s string) bool {
 	}
 
 	return special > 2*total/3
+}
+
+func ValidateTrackInput(artist, title string) error {
+	artist = strings.TrimSpace(artist)
+	title = strings.TrimSpace(title)
+
+	if artist == "" || title == "" {
+		return fmt.Errorf("artist and title are required")
+	}
+
+	if len([]rune(artist)) > maxLength {
+		return fmt.Errorf("artist is too long")
+	}
+	if len([]rune(title)) > maxLength {
+		return fmt.Errorf("title is too long")
+	}
+
+	if countLetters(artist) < minLetters {
+		return fmt.Errorf("artist must contain at least %d letters", minLetters)
+	}
+	if countLetters(title) < minLetters {
+		return fmt.Errorf("title must contain at least %d letters", minLetters)
+	}
+
+	if looksLikeURL(artist) || looksLikeURL(title) {
+		return fmt.Errorf("links are not allowed")
+	}
+
+	if looksLikeHTML(artist) || looksLikeHTML(title) {
+		return fmt.Errorf("html content is not allowed")
+	}
+
+	if isSuspicious(artist) {
+		return fmt.Errorf("artist looks suspicious")
+	}
+	if isSuspicious(title) {
+		return fmt.Errorf("title looks suspicious")
+	}
+
+	return nil
 }

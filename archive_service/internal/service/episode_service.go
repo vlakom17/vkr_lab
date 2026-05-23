@@ -1,6 +1,10 @@
 package service
 
 import (
+	"context"
+	"fmt"
+	"time"
+
 	"charts-archive-service/internal/domain/episode"
 	"charts-archive-service/internal/domain/event"
 	"charts-archive-service/internal/domain/track_episode"
@@ -8,8 +12,6 @@ import (
 	"charts-archive-service/internal/repository/postgres"
 	"charts-archive-service/internal/transport/http/response"
 	"charts-archive-service/internal/utilits"
-	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -59,8 +61,8 @@ func (s *EpisodeService) GetEpisode(
 			CurrentPosition:     t.CurrentPosition,
 			PreviousPosition:    t.PreviousPosition,
 			HighestPosition:     t.HighestPosition,
-			EpisodesCount:       t.EpisodesCount,
 			TimesAtPeakPosition: t.TimesAtPeakPosition,
+			EpisodesCount:       t.EpisodesCount,
 			ListenLinks: response.ListenLinks{
 				AppleMusic:  links.AppleMusic,
 				YandexMusic: links.YandexMusic,
@@ -113,9 +115,16 @@ func (s *EpisodeService) HandleEpisodeCreatedEvent(
 		CreatedAt: e.CreatedAt,
 	}
 
+	seenTracks := make(map[string]struct{})
 	for _, incoming := range e.Tracks {
 
 		nt := utilits.NormalizeTrack(incoming.Artist, incoming.Title)
+
+		if _, exists := seenTracks[nt.NormalizedKey]; exists {
+			return fmt.Errorf("duplicate track in episode: %s", nt.NormalizedKey)
+		}
+
+		seenTracks[nt.NormalizedKey] = struct{}{}
 
 		track, err := s.trackRepo.FindOrCreate(
 			ctx,
@@ -123,6 +132,7 @@ func (s *EpisodeService) HandleEpisodeCreatedEvent(
 			nt.Title,
 			nt.NormalizedKey,
 		)
+
 		if err != nil {
 			return err
 		}
@@ -131,8 +141,8 @@ func (s *EpisodeService) HandleEpisodeCreatedEvent(
 
 		var previousPosition int
 		var highestPosition int
-		var episodesCount int
 		var timesAtPeak int
+		var episodesCount int
 
 		if exists {
 			previousPosition = prev.CurrentPosition
@@ -165,8 +175,8 @@ func (s *EpisodeService) HandleEpisodeCreatedEvent(
 			CurrentPosition:     incoming.CurrentPosition,
 			PreviousPosition:    previousPosition,
 			HighestPosition:     highestPosition,
-			EpisodesCount:       episodesCount,
 			TimesAtPeakPosition: timesAtPeak,
+			EpisodesCount:       episodesCount,
 		})
 	}
 	_, err = s.episodeRepo.Create(ctx, newEpisode)

@@ -18,8 +18,8 @@ type TrackEpisodeResponse struct {
 	CurrentPosition     int         `json:"current_position"`
 	PreviousPosition    int         `json:"previous_position"`
 	HighestPosition     int         `json:"highest_position"`
-	EpisodesCount       int         `json:"episodes_count"`
 	TimesAtPeakPosition int         `json:"times_at_peak_position"`
+	EpisodesCount       int         `json:"episodes_count"`
 	ListenLinks         ListenLinks `json:"listen_links"`
 }
 

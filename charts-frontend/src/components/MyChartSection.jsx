@@ -39,13 +39,24 @@ function MyChartSection({ chart, loading, navigate, onEdit }) {
           <button
             className="auth-button"
             onClick={() => navigate(`/charts/${chart.id}/create-episode`)}
-            sstyle={{ color: "#fff" }}
+            style={{ color: "#fff" }}
           >
             <span className="plus">＋</span>
             Эпизод
           </button>
         </div>
+        <p
+          className="muted"
+          style={{
+            marginTop: "20px",
+            fontSize: "14px",
+            color: "#7c3aed",
+          }}
+        >
+          Для одного чарта доступно создание не более одного эпизода в сутки.
+        </p>
       </div>
+      
     )
   }
 export default MyChartSection;

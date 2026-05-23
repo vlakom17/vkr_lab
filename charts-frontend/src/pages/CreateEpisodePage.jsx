@@ -3,8 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { createEpisode, searchTracks } from "../api/archive";
 import { getChartByIdWithoutView } from "../api/charts";
 
-function capitalizeWords(str) {
-  return str.replace(/\b\w/g, (c) => c.toUpperCase());
+function capitalizeWords(str = "") {
+  return str
+    .toLowerCase()
+    .replace(/(^|[\s\-–—([{])([a-zа-яё])/gi, (match, prefix, letter) =>
+      prefix + letter.toUpperCase()
+    );
 }
 
 function CreateEpisodePage() {

@@ -13,21 +13,6 @@ type NormalizedTrack struct {
 	NormalizedKey string
 }
 
-func NormalizeTrack(artist, title string) NormalizedTrack {
-	artists, title := extractFeat(artist, title)
-
-	artist = normalizeArtist(artists)
-	title = normalizeTitle(title)
-
-	key := buildKey(artist, title)
-
-	return NormalizedTrack{
-		Artist:        artist,
-		Title:         title,
-		NormalizedKey: key,
-	}
-}
-
 func extractFeat(artist, title string) ([]string, string) {
 	reFeat := regexp.MustCompile(`(?i)\b(feat|ft|featuring|with)\.?\s+([^\(\)\[\]]+)`)
 
@@ -120,13 +105,6 @@ func normalizeArtist(artists []string) string {
 	return strings.Join(cleaned, ", ")
 }
 
-func buildKey(artist, title string) string {
-	artist = strings.TrimSpace(artist)
-	title = strings.TrimSpace(title)
-
-	return artist + "|" + title
-}
-
 func cleanSpaces(s string) string {
 	re := regexp.MustCompile(`\s+`)
 	return strings.TrimSpace(re.ReplaceAllString(s, " "))
@@ -159,6 +137,56 @@ func splitArtists(s string) []string {
 	}
 
 	return result
+}
+
+func removeArtistBrackets(s string) string {
+	re := regexp.MustCompile(`[\(\[].*?[\)\]]`)
+	return cleanSpaces(re.ReplaceAllString(s, " "))
+}
+
+func removeTitleNoise(title string) string {
+	reNoise := regexp.MustCompile(`(?i)\b(official video|official audio|lyric video|lyrics video|lyrics|audio|video|hd|hq)\b`)
+	return cleanSpaces(reNoise.ReplaceAllString(title, " "))
+}
+
+func normalizeRemixOutsideBrackets(title string) string {
+	re := regexp.MustCompile(`(?i)\b\w*\s*remix\b`)
+	if re.MatchString(title) {
+		title = re.ReplaceAllString(title, "")
+		return cleanSpaces(title) + " (remix)"
+	}
+	return title
+}
+
+func normalizeAcousticOutsideBrackets(title string) string {
+	re := regexp.MustCompile(`(?i)\b\w*\s*acoustic\b`)
+	if re.MatchString(title) {
+		title = re.ReplaceAllString(title, "")
+		return cleanSpaces(title) + " (acoustic)"
+	}
+	return title
+}
+
+func buildKey(artist, title string) string {
+	artist = strings.TrimSpace(artist)
+	title = strings.TrimSpace(title)
+
+	return artist + "|" + title
+}
+
+func NormalizeTrack(artist, title string) NormalizedTrack {
+	artists, title := extractFeat(artist, title)
+
+	artist = normalizeArtist(artists)
+	title = normalizeTitle(title)
+
+	key := buildKey(artist, title)
+
+	return NormalizedTrack{
+		Artist:        artist,
+		Title:         title,
+		NormalizedKey: key,
+	}
 }
 
 func unique(input []string) []string {
@@ -212,32 +240,4 @@ func Capitalize(s string) string {
 	}
 
 	return string(runes)
-}
-
-func removeArtistBrackets(s string) string {
-	re := regexp.MustCompile(`[\(\[].*?[\)\]]`)
-	return cleanSpaces(re.ReplaceAllString(s, " "))
-}
-
-func removeTitleNoise(title string) string {
-	reNoise := regexp.MustCompile(`(?i)\b(official video|official audio|lyric video|lyrics video|lyrics|audio|video|hd|hq)\b`)
-	return cleanSpaces(reNoise.ReplaceAllString(title, " "))
-}
-
-func normalizeRemixOutsideBrackets(title string) string {
-	re := regexp.MustCompile(`(?i)\b\w*\s*remix\b`)
-	if re.MatchString(title) {
-		title = re.ReplaceAllString(title, "")
-		return cleanSpaces(title) + " (remix)"
-	}
-	return title
-}
-
-func normalizeAcousticOutsideBrackets(title string) string {
-	re := regexp.MustCompile(`(?i)\b\w*\s*acoustic\b`)
-	if re.MatchString(title) {
-		title = re.ReplaceAllString(title, "")
-		return cleanSpaces(title) + " (acoustic)"
-	}
-	return title
 }

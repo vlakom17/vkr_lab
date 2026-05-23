@@ -15,7 +15,7 @@ func SetupEpisodeRoutes(
 
 	episodes := r.Group("/episodes")
 	{
-		episodes.GET("", episodeHandler.GetLatestEpisodesPage)
+		episodes.GET("/latest-page", episodeHandler.GetLatestEpisodesPage)
 		episodes.GET("/chart/:chart_id", episodeHandler.GetEpisodesByChart)
 		episodes.GET("/:id", episodeHandler.GetEpisode)
 	}

@@ -27,7 +27,7 @@ function CreateChartPage() {
   };
 
   return (
-    <div className="container">
+    <div className="chart-create">
       <div className="auth-card">
         <h1>Создание чарта</h1>
 

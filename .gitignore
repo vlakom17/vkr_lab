@@ -2,6 +2,6 @@
 *.docx
 *.pptx
 
-# Env
+# env
 .env
 .env.*

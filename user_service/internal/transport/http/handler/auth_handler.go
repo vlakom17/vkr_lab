@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"charts-user-service/internal/service"
-	"charts-user-service/internal/transport/http/request"
 	"net/http"
 	"strings"
+
+	"charts-user-service/internal/service"
+	"charts-user-service/internal/transport/http/request"
 
 	"github.com/gin-gonic/gin"
 )

@@ -8,6 +8,9 @@ function EpisodePage() {
   const { id } = useParams();
   const [episode, setEpisode] = useState(null);
   const [chartName, setChartName] = useState("Загрузка...");
+  const chartId = episode?.chart_id || episode?.ChartID;
+  const createdAt = episode?.created_at || episode?.CreatedAt;
+  const tracks = episode?.tracks || episode?.Tracks;
 
   useEffect(() => {
     getEpisodeById(id)
@@ -19,12 +22,12 @@ function EpisodePage() {
 
   useEffect(() => {
     if (!episode) return;
-    getChartByIdWithoutView(episode.chart_id)
+    getChartByIdWithoutView(chartId)
       .then((data) => {
         setChartName(data.title);
       })
       .catch(() => setChartName("Неизвестный чарт"));
-  }, [episode?.chart_id]);
+  }, [chartId]);
 
   const navigate = useNavigate();
   if (!episode) {
@@ -40,19 +43,19 @@ function EpisodePage() {
       <div className="card episode-header">
         <h1
           className="link"
-          onClick={() => navigate(`/charts/${episode.chart_id}`)}
+          onClick={() => navigate(`/charts/${chartId}`)}
         >
           {chartName}
         </h1>
 
         <p className="muted">
-          Эпизод от {new Date(episode.created_at).toLocaleDateString()}
+          Эпизод от {new Date(createdAt).toLocaleDateString()}
         </p>
       </div>
 
       <h3>Треки</h3>
 
-      {!episode.tracks || episode.tracks.length === 0 ? (
+      {!tracks || tracks.length === 0 ? (
         <p>Нет треков</p>
       ) : (
         <table className="episode-table">
@@ -69,7 +72,7 @@ function EpisodePage() {
           </thead>
 
           <tbody>
-            {[...episode.tracks]
+            {[...tracks]
               .sort((a, b) => a.current_position - b.current_position)
               .map((track) => {
                 let color = "var(--text)";
@@ -95,7 +98,10 @@ function EpisodePage() {
                     : `${track.highest_position}`;
 
                 return (
-                  <tr className="episode-row">
+                  <tr
+                    key={track.current_position}
+                    className="episode-row"
+                  >
                     <td>
                       <strong>{track.current_position}</strong>
                     </td>

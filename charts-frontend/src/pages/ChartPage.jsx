@@ -1,23 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  getEpisodesByChart,
-  getEpisodeById,
-} from "../api/archive";
-import {
-  getChartStats,
-  sendChartReaction,
-} from "../api/analysis";
+import { getEpisodesByChart, getEpisodeById } from "../api/archive";
+import { getChartStats, sendChartReaction, getMyReaction } from "../api/analysis";
 import { getUserById } from "../api/users";
 import { getChartById } from "../api/charts"
-import { getMyReaction } from "../api/analysis";
 import EpisodeListItem from "../components/EpisodeListItem";
-import { useLocation } from "react-router-dom";
 
 function ChartPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [chart, setChart] = useState(null);
   const [episodes, setEpisodes] = useState([]);
   const [topTracks, setTopTracks] = useState({});
@@ -28,14 +19,7 @@ function ChartPage() {
   const [showUser, setShowUser] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
-  const location = useLocation();
   const PAGE_SIZE = 5;
-
-  useEffect(() => {
-    getChartById(id).then(setChart);
-    getChartStats(id).then(setStats);
-    getEpisodesByChart(id).then(setEpisodes);
-  }, [id, location.state]);
   
   useEffect(() => {
     async function fetchData() {
@@ -53,7 +37,6 @@ function ChartPage() {
         console.error("Ошибка загрузки чарта:", e);
       }
     }
-
     fetchData();
   }, [id]);
 
@@ -104,20 +87,21 @@ function ChartPage() {
       setLoadingReaction(false);
     }
   };
+
   useEffect(() => {
     async function loadMyReaction() {
       try {
         const data = await getMyReaction(id);
 
-        setMyReaction(data.type || null);
+        setMyReaction(data?.type || data?.Type || null);
       } catch (e) {
         console.error("Ошибка загрузки реакции:", e);
         setMyReaction(null);
       }
     }
-
     loadMyReaction();
   }, [id]);
+
   useEffect(() => {
     if (!episodes || episodes.length === 0) return;
 
@@ -125,13 +109,16 @@ function ChartPage() {
       try {
         const results = await Promise.all(
           episodes.map(async (ep) => {
-            if (!ep?.ID) return [ep.ID, null];
-
+            const episodeId = ep.id || ep.ID;
+            if (!episodeId) {
+             return [null, null];
+            }
             try {
-              const full = await getEpisodeById(ep.ID);
-              return [ep.ID, full?.tracks?.[0] || null];
+              const full = await getEpisodeById(episodeId);
+              const tracks = full?.tracks || full?.Tracks;
+              return [episodeId, tracks?.[0] || null];
             } catch {
-              return [ep.ID, null];
+              return [episodeId, null];
             }
           })
         );
@@ -146,10 +133,7 @@ function ChartPage() {
   }, [episodes]);
 
   if (!chart) return <p>Загрузка...</p>;
-    const visibleEpisodes = (episodes || []).slice(
-    0,
-    page * PAGE_SIZE
-  );
+  const visibleEpisodes = (episodes || []).slice(0, page * PAGE_SIZE);
 
   const hasMore = visibleEpisodes.length < episodes.length;
   return (
@@ -157,7 +141,7 @@ function ChartPage() {
       <div className="card chart-header">
         <h1>{chart.title}</h1>
 
-        <p>
+        <div>
           <span className="muted">Автор:</span>{" "}
          
             <span
@@ -171,11 +155,11 @@ function ChartPage() {
               <div className="user-inline">
                 <p><b>О себе:</b> {user.about || "—"}</p>
                 <p className="muted">
-                  Зарегистрирован: {new Date(user.createdAt).toLocaleDateString()}
+                  Зарегистрирован: {new Date(user.created_at).toLocaleDateString()}
                 </p>
               </div>
             )}
-        </p>
+        </div>
 
         <div className="chart-meta">
           <p><span className="muted">Жанр:</span> {chart.genre || "—"}</p>
@@ -222,15 +206,15 @@ function ChartPage() {
 
       <div className="list">
         {visibleEpisodes.map((ep, index) => {
-          const safeId = ep?.ID || index;
-          const topTrack = ep?.ID ? topTracks?.[ep.ID] : null;
-
+          const episodeId = ep?.id || ep?.ID;
+          const safeId = episodeId || index;
+          const topTrack = episodeId ? topTracks?.[episodeId] : null;
           return (
             <EpisodeListItem
               key={safeId}
               episode={ep}
               topTrack={topTrack}
-              onClick={() => ep?.ID && navigate(`/episodes/${ep.ID}`)}
+              onClick={() => episodeId && navigate(`/episodes/${episodeId}`)}
             />
           );
         })}

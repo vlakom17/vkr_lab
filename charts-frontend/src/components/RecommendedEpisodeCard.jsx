@@ -9,10 +9,12 @@ function capitalizeWords(str) {
 function RecommendedEpisodeCard({ episode }) {
     const navigate = useNavigate();
     const [chartName, setChartName] = useState("Загрузка...");
-    const topTrack = episode.tracks?.[0];
+    const tracks = episode.tracks || episode.Tracks;
+    const createdAt = episode.created_at || episode.CreatedAt;
+    const topTrack = tracks?.[0];
 
-    const date = episode.created_at
-        ? new Date(episode.created_at).toLocaleDateString()
+    const date = createdAt
+        ? new Date(createdAt).toLocaleDateString()
         : "—";
 
     useEffect(() => {

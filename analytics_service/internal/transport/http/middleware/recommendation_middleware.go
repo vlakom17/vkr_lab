@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"charts-analytics-service/internal/client"
 	"strings"
+
+	"charts-analytics-service/internal/client"
 
 	"github.com/gin-gonic/gin"
 )

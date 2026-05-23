@@ -50,8 +50,9 @@ func (r *EpisodeRepository) Create(ctx context.Context, e *episode.Episode) (*ep
 		current_position,
 		previous_position,
 		highest_position,
-		episodes_count,
-		times_at_peak_position
+		times_at_peak_position,
+		episodes_count
+		
 	)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
@@ -64,8 +65,8 @@ func (r *EpisodeRepository) Create(ctx context.Context, e *episode.Episode) (*ep
 			t.CurrentPosition,
 			t.PreviousPosition,
 			t.HighestPosition,
-			t.EpisodesCount,
 			t.TimesAtPeakPosition,
+			t.EpisodesCount,
 		)
 		if err != nil {
 			return nil, err
@@ -170,7 +171,7 @@ func (r *EpisodeRepository) GetLatestByChartID(ctx context.Context, chartID uuid
 
 	tracksQuery := `
 	SELECT id, track_id, current_position, previous_position,
-	       highest_position, episodes_count, times_at_peak_position
+	       highest_position, times_at_peak_position, episodes_count 
 	FROM track_episode
 	WHERE episode_id = $1
 	ORDER BY current_position
@@ -193,8 +194,8 @@ func (r *EpisodeRepository) GetLatestByChartID(ctx context.Context, chartID uuid
 			&t.CurrentPosition,
 			&t.PreviousPosition,
 			&t.HighestPosition,
-			&t.EpisodesCount,
 			&t.TimesAtPeakPosition,
+			&t.EpisodesCount,
 		)
 		if err != nil {
 			return nil, err
@@ -227,8 +228,8 @@ func (r *EpisodeRepository) GetLatestWithTracksByLimit(
 		te.current_position,
 		te.previous_position,
 		te.highest_position,
-		te.episodes_count,
-		te.times_at_peak_position
+		te.times_at_peak_position,
+		te.episodes_count
 	FROM episodes e
 	JOIN track_episode te ON te.episode_id = e.id
 	JOIN tracks t ON t.id = te.track_id
@@ -267,8 +268,8 @@ func (r *EpisodeRepository) GetLatestWithTracksByLimit(
 			&track.CurrentPosition,
 			&track.PreviousPosition,
 			&track.HighestPosition,
-			&track.EpisodesCount,
 			&track.TimesAtPeakPosition,
+			&track.EpisodesCount,
 		)
 		if err != nil {
 			return nil, err
@@ -315,8 +316,8 @@ func (r *EpisodeRepository) GetTracksWithMetaByEpisodeID(
 		te.current_position,
 		te.previous_position,
 		te.highest_position,
-		te.episodes_count,
-		te.times_at_peak_position
+		te.times_at_peak_position,
+		te.episodes_count
 	FROM track_episode te
 	JOIN tracks t ON te.track_id = t.id
 	WHERE te.episode_id = $1
@@ -341,8 +342,8 @@ func (r *EpisodeRepository) GetTracksWithMetaByEpisodeID(
 			&t.CurrentPosition,
 			&t.PreviousPosition,
 			&t.HighestPosition,
-			&t.EpisodesCount,
 			&t.TimesAtPeakPosition,
+			&t.EpisodesCount,
 		)
 		if err != nil {
 			return nil, err
@@ -373,8 +374,8 @@ func (r *EpisodeRepository) GetNearestLeftWithTracks(
 		te.current_position,
 		te.previous_position,
 		te.highest_position,
-		te.episodes_count,
-		te.times_at_peak_position
+		te.times_at_peak_position,
+		te.episodes_count
 	FROM episodes e
 	JOIN track_episode te ON te.episode_id = e.id
 	JOIN tracks t ON t.id = te.track_id
@@ -409,8 +410,8 @@ func (r *EpisodeRepository) GetNearestLeftWithTracks(
 			&track.CurrentPosition,
 			&track.PreviousPosition,
 			&track.HighestPosition,
-			&track.EpisodesCount,
 			&track.TimesAtPeakPosition,
+			&track.EpisodesCount,
 		)
 		if err != nil {
 			return nil, err

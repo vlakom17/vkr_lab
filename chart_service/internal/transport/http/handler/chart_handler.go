@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"net/http"
+	"strconv"
+
 	"charts-chart-service/internal/domain/event"
 	"charts-chart-service/internal/service"
 	"charts-chart-service/internal/transport/http/request"
 	"charts-chart-service/internal/transport/http/response"
 	"charts-chart-service/internal/utilits"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -46,8 +47,8 @@ func (h *ChartHandler) CreateChart(c *gin.Context) {
 		userID,
 		req.Title,
 		req.Genre,
-		req.PositionCount,
 		req.Description,
+		req.PositionCount,
 	)
 
 	if err != nil {
@@ -57,11 +58,11 @@ func (h *ChartHandler) CreateChart(c *gin.Context) {
 
 	resp := response.ChartResponse{
 		ID:            chart.ID.String(),
+		UserID:        chart.UserID.String(),
 		Title:         chart.Title,
 		Genre:         chart.Genre,
-		PositionCount: chart.PositionCount,
 		Description:   chart.Description,
-		UserID:        chart.UserID.String(),
+		PositionCount: chart.PositionCount,
 	}
 
 	c.JSON(http.StatusCreated, resp)
@@ -95,12 +96,12 @@ func (h *ChartHandler) PatchChart(c *gin.Context) {
 
 	chart, err := h.service.PatchChart(
 		c.Request.Context(),
-		userID,
 		chartID,
+		userID,
 		req.Title,
 		req.Genre,
-		req.PositionCount,
 		req.Description,
+		req.PositionCount,
 	)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

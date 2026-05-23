@@ -1,9 +1,10 @@
 function EpisodeListItem({ episode, topTrack, onClick }) {
+  const createdAt = episode.created_at || episode.CreatedAt;
   let date = "Нет даты";
 
   try {
-    if (episode?.CreatedAt) {
-      date = new Date(episode.CreatedAt).toLocaleDateString();
+    if (createdAt) {
+      date = new Date(createdAt).toLocaleDateString();
     }
   } catch {}
 

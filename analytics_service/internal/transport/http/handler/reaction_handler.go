@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"charts-analytics-service/internal/service"
-	"charts-analytics-service/internal/transport/http/response"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"charts-analytics-service/internal/service"
+	"charts-analytics-service/internal/transport/http/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -135,6 +136,7 @@ func (h *ReactionHandler) GetMyReactionOnChart(c *gin.Context) {
 		token,
 		chartID,
 	)
+
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"type": nil,

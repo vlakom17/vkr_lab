@@ -10,6 +10,6 @@ type TrackEpisode struct {
 
 	PreviousPosition    int
 	HighestPosition     int
-	EpisodesCount       int
 	TimesAtPeakPosition int
+	EpisodesCount       int
 }

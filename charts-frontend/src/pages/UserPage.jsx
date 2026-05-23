@@ -29,10 +29,7 @@ function UserPage() {
 
         <p>
           <span className="muted">Дата регистрации:</span>{" "}
-          {user.createdAt
-            ? new Date(user.createdAt).toLocaleDateString()
-            : user.created_at
-            ? new Date(user.created_at).toLocaleDateString()
+          {user.created_at ? new Date(user.created_at).toLocaleDateString()
             : "—"}
         </p>
       </div>

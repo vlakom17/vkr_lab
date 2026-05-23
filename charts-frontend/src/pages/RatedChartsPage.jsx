@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getMyLikedCharts,
-  getMyDislikedCharts,
-} from "../api/charts";
-import ChartCard from "../components/ChartCard";
 import { getUserById } from "../api/users";
+import { getMyLikedCharts, getMyDislikedCharts } from "../api/charts";
+import ChartCard from "../components/ChartCard";
 
 function RatedChartsPage({ type }) {
   const [charts, setCharts] = useState([]);
