@@ -176,7 +176,19 @@ function CreateEpisodePage() {
             onClick={handleSubmit}
           >
             Создать эпизод
-          </button>
+          </button> 
+          <p
+            className="muted"
+            style={{
+              marginTop: "16px",
+              fontSize: "12px",
+              lineHeight: "1.4",
+              color: "#6d28d9",
+            }}
+          >
+            При добавлении в эпизод ремикса, указывайте автора ремикса в поле
+            «Артист», а не в названии трека.
+          </p>
       </div>
   </div>
   );
