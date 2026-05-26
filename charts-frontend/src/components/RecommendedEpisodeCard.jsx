@@ -2,8 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getChartByIdWithoutView } from "../api/charts";
 
-function capitalizeWords(str) {
-  return str?.replace(/\b\w/g, (c) => c.toUpperCase());
+function capitalizeWords(str = "") {
+  return str
+    .toLowerCase()
+    .replace(/(^|[\s\-–—([{])([a-zа-яё])/gi, (match, prefix, letter) =>
+      prefix + letter.toUpperCase()
+    );
 }
 
 function RecommendedEpisodeCard({ episode }) {
