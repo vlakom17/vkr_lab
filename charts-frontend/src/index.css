@@ -120,6 +120,12 @@ h2 {
   margin-bottom: 20px;
 }
 
+.home-title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+}
+
 .container {
   max-width: 1000px;
   margin: 0;

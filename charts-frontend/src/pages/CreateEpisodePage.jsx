@@ -138,7 +138,7 @@ function CreateEpisodePage() {
 
                 <input
                   className="auth-input"
-                  placeholder="Артист"
+                  placeholder="Исполнитель"
                   value={track.artist}
                   onChange={(e) =>
                     updateTrack(index, "artist", e.target.value)
@@ -187,7 +187,7 @@ function CreateEpisodePage() {
             }}
           >
             При добавлении в эпизод ремикса указывайте автора ремикса в поле
-            «Артист», а не в названии трека.
+            «Исполнитель», а не в названии трека.
           </p>
       </div>
   </div>

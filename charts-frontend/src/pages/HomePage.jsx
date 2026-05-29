@@ -48,7 +48,9 @@ function HomePage() {
   return (
     
     <div className="container">
-        <h2>Charter - интерактивный сервис пользовательских музыкальных чартов</h2>
+        <h2 className="home-title">
+          Charter - интерактивный сервис пользовательских музыкальных чартов
+        </h2>
         <div className="tabs">
     <button
       onClick={() => setTab("latest")}
