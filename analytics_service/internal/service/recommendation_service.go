@@ -4,23 +4,27 @@ import (
 	"context"
 	"math/rand"
 	"sort"
+	"time"
 
-	"charts-analytics-service/internal/client"
 	"charts-analytics-service/internal/client/dto"
 	"charts-analytics-service/internal/domain/reaction"
-	"charts-analytics-service/internal/repository/postgres"
 
 	"github.com/google/uuid"
 )
 
+type ArchiveClient interface {
+	GetNearestLeftEpisode(ctx context.Context, chartID uuid.UUID, date time.Time) (*dto.EpisodeResponse, error)
+	GetLatestEpisodes(ctx context.Context, limit int) ([]dto.EpisodeResponse, error)
+}
+
 type RecommendationService struct {
-	repo          *postgres.ReactionRepository
-	archiveClient *client.ArchiveClient
+	repo          reaction.ReactionRepository
+	archiveClient ArchiveClient
 }
 
 func NewRecommendationService(
-	repo *postgres.ReactionRepository,
-	archiveClient *client.ArchiveClient,
+	repo reaction.ReactionRepository,
+	archiveClient ArchiveClient,
 ) *RecommendationService {
 	return &RecommendationService{
 		repo:          repo,

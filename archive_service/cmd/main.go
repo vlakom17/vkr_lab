@@ -27,8 +27,8 @@ func main() {
 	episodeRepo := postgres.NewEpisodeRepository(pg)
 	trackRepo := postgres.NewTrackRepository(pg)
 
-	episodeService := service.NewEpisodeService(*episodeRepo, *trackRepo)
-	trackService := service.NewTrackService(*trackRepo)
+	episodeService := service.NewEpisodeService(episodeRepo, trackRepo)
+	trackService := service.NewTrackService(trackRepo)
 
 	consumer := mb.NewConsumer(cfg.KafkaBroker, mb.KafkaTopic, cfg.KafkaGroupID)
 	kafkaCons := kafkaConsumer.NewKafkaConsumer(consumer)

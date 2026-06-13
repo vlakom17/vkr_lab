@@ -4,18 +4,17 @@ import (
 	"context"
 
 	"charts-user-service/internal/domain/user"
-	"charts-user-service/internal/repository/postgres"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	userRepo *postgres.UserRepository
+	userRepo user.UserRepository
 }
 
 func NewUserService(
-	userRepo *postgres.UserRepository,
+	userRepo user.UserRepository,
 ) *UserService {
 	return &UserService{
 		userRepo: userRepo,

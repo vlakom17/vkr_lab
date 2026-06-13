@@ -3,24 +3,25 @@ package service
 import (
 	"context"
 
-	"charts-analytics-service/internal/client"
 	"charts-analytics-service/internal/domain/event"
 	"charts-analytics-service/internal/domain/reaction"
-	"charts-analytics-service/internal/repository/postgres"
 
 	"github.com/google/uuid"
 )
 
+type UserClient interface {
+	GetUserIDByToken(ctx context.Context, token string) (uuid.UUID, error)
+}
+
 type ReactionService struct {
-	repo       *postgres.ReactionRepository
-	userClient *client.UserClient
+	repo       reaction.ReactionRepository
+	userClient UserClient
 }
 
 func NewReactionService(
-	repo *postgres.ReactionRepository,
-	userClient *client.UserClient,
+	repo reaction.ReactionRepository,
+	userClient UserClient,
 ) *ReactionService {
-
 	return &ReactionService{
 		repo:       repo,
 		userClient: userClient,

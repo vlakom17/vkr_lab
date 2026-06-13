@@ -59,8 +59,6 @@ services:
     restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
-    ports:
-      - "2181:2181"
 
   charts-kafka:
     image: confluentinc/cp-kafka:7.5.0

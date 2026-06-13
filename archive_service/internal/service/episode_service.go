@@ -7,9 +7,9 @@ import (
 
 	"charts-archive-service/internal/domain/episode"
 	"charts-archive-service/internal/domain/event"
+	"charts-archive-service/internal/domain/track"
 	"charts-archive-service/internal/domain/track_episode"
 	"charts-archive-service/internal/repository/dto"
-	"charts-archive-service/internal/repository/postgres"
 	"charts-archive-service/internal/transport/http/response"
 	"charts-archive-service/internal/utilits"
 
@@ -17,13 +17,13 @@ import (
 )
 
 type EpisodeService struct {
-	episodeRepo postgres.EpisodeRepository
-	trackRepo   postgres.TrackRepository
+	episodeRepo episode.EpisodeRepository
+	trackRepo   track.TrackRepository
 }
 
 func NewEpisodeService(
-	episodeRepo postgres.EpisodeRepository,
-	trackRepo postgres.TrackRepository,
+	episodeRepo episode.EpisodeRepository,
+	trackRepo track.TrackRepository,
 ) *EpisodeService {
 	return &EpisodeService{
 		episodeRepo: episodeRepo,

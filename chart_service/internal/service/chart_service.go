@@ -9,23 +9,28 @@ import (
 	"charts-chart-service/internal/client"
 	"charts-chart-service/internal/domain/chart"
 	"charts-chart-service/internal/domain/event"
-	"charts-chart-service/internal/repository/postgres"
 	"charts-chart-service/internal/utilits"
 
 	"github.com/google/uuid"
 )
 
+type AnalyticsClient interface {
+	GetMostPopularChartIDs(ctx context.Context, limit int) ([]uuid.UUID, error)
+	GetUserLikedChartIDs(ctx context.Context, userID uuid.UUID) ([]uuid.UUID, error)
+	GetUserDislikedChartIDs(ctx context.Context, userID uuid.UUID) ([]uuid.UUID, error)
+}
+
 type ChartService struct {
-	repo            *postgres.ChartRepository
+	repo            chart.ChartRepository
 	userClient      *client.UserClient
-	analyticsClient *client.AnalyticsClient
+	analyticsClient AnalyticsClient
 	producer        event.EventProducer
 }
 
 func NewChartService(
-	repo *postgres.ChartRepository,
+	repo chart.ChartRepository,
 	userClient *client.UserClient,
-	analyticsClient *client.AnalyticsClient,
+	analyticsClient AnalyticsClient,
 	producer event.EventProducer,
 ) *ChartService {
 	return &ChartService{

@@ -150,7 +150,7 @@ func removeTitleNoise(title string) string {
 }
 
 func normalizeRemixOutsideBrackets(title string) string {
-	re := regexp.MustCompile(`(?i)\b\w*\s*remix\b`)
+	re := regexp.MustCompile(`(?i)\bremix\b`)
 	if re.MatchString(title) {
 		title = re.ReplaceAllString(title, "")
 		return cleanSpaces(title) + " (remix)"
@@ -159,7 +159,7 @@ func normalizeRemixOutsideBrackets(title string) string {
 }
 
 func normalizeAcousticOutsideBrackets(title string) string {
-	re := regexp.MustCompile(`(?i)\b\w*\s*acoustic\b`)
+	re := regexp.MustCompile(`(?i)\bacoustic\b`)
 	if re.MatchString(title) {
 		title = re.ReplaceAllString(title, "")
 		return cleanSpaces(title) + " (acoustic)"

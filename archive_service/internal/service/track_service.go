@@ -5,14 +5,13 @@ import (
 	"strings"
 
 	"charts-archive-service/internal/domain/track"
-	"charts-archive-service/internal/repository/postgres"
 )
 
 type TrackService struct {
-	trackRepo postgres.TrackRepository
+	trackRepo track.TrackRepository
 }
 
-func NewTrackService(trackRepo postgres.TrackRepository) *TrackService {
+func NewTrackService(trackRepo track.TrackRepository) *TrackService {
 	return &TrackService{
 		trackRepo: trackRepo,
 	}

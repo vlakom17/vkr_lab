@@ -5,9 +5,8 @@ import (
 	"errors"
 	"time"
 
+	"charts-user-service/internal/domain/auth"
 	"charts-user-service/internal/domain/user"
-	"charts-user-service/internal/repository/postgres"
-	"charts-user-service/internal/repository/redis"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -15,13 +14,13 @@ import (
 )
 
 type AuthService struct {
-	userRepo *postgres.UserRepository
-	authRepo *redis.AuthRepository
+	userRepo user.UserRepository
+	authRepo auth.AuthRepository
 }
 
 func NewAuthService(
-	userRepo *postgres.UserRepository,
-	authRepo *redis.AuthRepository,
+	userRepo user.UserRepository,
+	authRepo auth.AuthRepository,
 ) *AuthService {
 	return &AuthService{
 		userRepo: userRepo,
