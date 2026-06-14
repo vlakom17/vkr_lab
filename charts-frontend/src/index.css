@@ -541,6 +541,11 @@ textarea.auth-input {
   text-decoration: underline;
 }
 
+.episode-table th.appearances-column {
+  padding-left: 20px;
+  text-align: center;
+}
+
 .user-card {
   max-width: 600px;
   margin: 0 auto;

@@ -66,7 +66,7 @@ function EpisodePage() {
               <th>Название</th>
               <th>Было</th>
               <th>Пик</th>
-              <th>Появлений в чарте</th>
+              <th className="appearances-column">Появлений в чарте</th>
               <th></th>
             </tr>
           </thead>

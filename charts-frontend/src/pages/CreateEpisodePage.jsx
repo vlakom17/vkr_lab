@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { createEpisode, searchTracks } from "../api/archive";
+import { createEpisode, searchTracks, getEpisodesByChart } from "../api/archive";
 import { getChartByIdWithoutView } from "../api/charts";
 
 function capitalizeWords(str = "") {
@@ -17,6 +17,7 @@ function CreateEpisodePage() {
   const [error, setError] = useState("");
   const [chart, setChart] = useState(null);
   const [tracks, setTracks] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -82,9 +83,32 @@ function CreateEpisodePage() {
     setTracks(updated);
   };
 
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function waitForEpisodeCreated(chartId, previousCount, attempts = 3) {
+    for (let i = 0; i < attempts; i++) {
+      await delay(1000);
+
+      const episodes = await getEpisodesByChart(chartId);
+
+      if (Array.isArray(episodes) && episodes.length > previousCount) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   const handleSubmit = async (e) => {
     e?.preventDefault();
+
+    if (isSubmitting) return;
+
     setError("");
+    setIsSubmitting(true);
+
     try {
       const prepared = tracks
         .filter((t) => t.artist && t.title)
@@ -99,12 +123,28 @@ function CreateEpisodePage() {
         return;
       }
 
+      const episodesBefore = await getEpisodesByChart(id);
+
       await createEpisode(id, { tracks: prepared });
+
+      const created = await waitForEpisodeCreated(
+        id,
+        Array.isArray(episodesBefore) ? episodesBefore.length : 0
+      );
+
+      if (!created) {
+        setError(
+          "Эпизод не появился в архиве. Повторите попытку позже."
+        );
+        return;
+      }
 
       navigate(`/charts/${id}`, { state: { refresh: true } });
     } catch (e) {
       console.error(e);
       setError("Ошибка создания эпизода");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -115,7 +155,17 @@ function CreateEpisodePage() {
       <div className="card">
         <h1>Создание эпизода</h1>
         <p className="muted">{chart.title}</p>
-
+        {error && (
+          <p
+            style={{
+              marginTop: "12px",
+              color: "#dc2626",
+              fontWeight: "500",
+            }}
+          >
+            {error}
+          </p>
+        )}
         <div style={{ marginTop: "20px" }}>
           <div className="episode-form">
             {tracks.map((track, index) => (
@@ -174,9 +224,10 @@ function CreateEpisodePage() {
             className="auth-button"
             style={{ marginTop: "20px" }}
             onClick={handleSubmit}
+            disabled={isSubmitting}
           >
-            Создать эпизод
-          </button> 
+            {isSubmitting ? "Создание..." : "Создать эпизод"}
+          </button>
           <p
             className="muted"
             style={{
