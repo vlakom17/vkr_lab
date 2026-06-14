@@ -608,3 +608,6 @@ textarea.auth-input {
   color: #777;
   font-size: 14px;
 }
+.error-message {
+  white-space: pre-line;
+}

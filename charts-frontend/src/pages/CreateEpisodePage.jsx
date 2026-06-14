@@ -134,7 +134,7 @@ function CreateEpisodePage() {
 
       if (!created) {
         setError(
-          "Эпизод не появился в архиве. Повторите попытку позже."
+          "Эпизод не появился в архиве. Проверьте список на повторяющиеся треки или попробуйте позже."
         );
         return;
       }
@@ -142,7 +142,9 @@ function CreateEpisodePage() {
       navigate(`/charts/${id}`, { state: { refresh: true } });
     } catch (e) {
       console.error(e);
-      setError("Ошибка создания эпизода");
+      setError(
+        "Ошибка создания эпизода.\nЕсли название трека или исполнитель состоит только из цифр, добавьте перед ним слово \"the\"."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -161,6 +163,7 @@ function CreateEpisodePage() {
               marginTop: "12px",
               color: "#dc2626",
               fontWeight: "500",
+              whiteSpace: "pre-line"
             }}
           >
             {error}
